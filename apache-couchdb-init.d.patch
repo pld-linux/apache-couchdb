@@ -9,7 +9,7 @@
 +       init_enabled=true
 +       AC_SUBST([initdir], ['${sysconfdir}/rc.d/init.d'])
 +       AC_MSG_RESULT(${initdir})
-+   else if test -d /etc/rc.d; then
++   elif test -d /etc/rc.d; then
         init_enabled=true
         AC_SUBST([initdir], ['${sysconfdir}/rc.d'])
         AC_MSG_RESULT(${initdir})
