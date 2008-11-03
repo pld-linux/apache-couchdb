@@ -1,0 +1,15 @@
+--- apache-couchdb-0.8.1-incubating/configure.ac~	2008-06-17 01:47:54.000000000 +0300
++++ apache-couchdb-0.8.1-incubating/configure.ac	2008-11-03 14:32:20.470999260 +0200
+@@ -151,7 +151,11 @@
+ 
+ if test "$use_init" = "yes"; then
+    AC_MSG_CHECKING(location of init directory)
+-   if test -d /etc/rc.d; then
++   if test -d /etc/rc.d/init.d; then
++       init_enabled=true
++       AC_SUBST([initdir], ['${sysconfdir}/rc.d/init.d'])
++       AC_MSG_RESULT(${initdir})
++   else if test -d /etc/rc.d; then
+        init_enabled=true
+        AC_SUBST([initdir], ['${sysconfdir}/rc.d'])
+        AC_MSG_RESULT(${initdir})
