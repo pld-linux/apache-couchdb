@@ -1,16 +1,20 @@
+%define _mochiwebver r97
+%define _ibrowsever 1.5.2
+
 Summary:	Apache CouchDB
 Name:		apache-couchdb
-Version:	0.8.1
+Version:	0.10.0
 Release:	0.1
 License:	Apache v2.0
 Group:		Applications
-Source0:	http://www.apache.org/dist/incubator/couchdb/%{version}-incubating/%{name}-%{version}-incubating.tar.gz
-# Source0-md5:	89e037b370bef33be93f0f317e07615f
+Source0:	http://www.apache.org/dist/couchdb/%{version}/%{name}-%{version}.tar.gz
+# Source0-md5:	227886b5ecbb6bcbbdc538aac4592b0e
 Patch0:		%{name}-init.d.patch
-URL:		http://incubator.apache.org/couchdb/
+Patch1:		%{name}-aclocal.patch
+URL:		http://couchdb.apache.org/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1.6.3
-BuildRequires:	erlang >= 1:R11B
+BuildRequires:	erlang >= 1:R12B5
 BuildRequires:	help2man
 BuildRequires:	js-devel
 BuildRequires:	libicu-devel
@@ -23,7 +27,7 @@ Requires(pre):	/bin/id
 Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
-Requires:	erlang >= 1:R11B
+Requires:	erlang >= 1:R12B5
 # these came from readme, need to check if these are really needed
 #Requires:	Mozilla-SpiderMonkey
 #Requires:	gcc
@@ -42,10 +46,12 @@ indexable using a table-oriented view engine with JavaScript acting as
 the default view definition language.
 
 %prep
-%setup -q -n %{name}-%{version}-incubating
+%setup -q
 %patch0 -p1
+%patch1 -p1
 
 %build
+
 %{__libtoolize}
 %{__aclocal}
 %{__autoconf}
@@ -53,6 +59,7 @@ the default view definition language.
 %{__automake}
 %configure
 %{__make}
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -87,7 +94,10 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS CHANGES NEWS NOTICE README THANKS
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/couch.ini
+%dir %{_sysconfdir}/couchdb/default.d
+%dir %{_sysconfdir}/couchdb/local.d
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/default.ini
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/local.ini
 # XXX -> sysconfdir
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/default/couchdb
 %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/couchdb
@@ -107,18 +117,25 @@ fi
 %dir %{_libdir}/couchdb/erlang
 %dir %{_libdir}/couchdb/erlang/lib
 # XXX: better have unversioned dirs?
-%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating
-%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/ebin
-%{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/ebin/*.beam
-%{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/ebin/*.app
+%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}
+%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}/ebin
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/ebin/*.beam
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/ebin/*.app
 # XXX check if this include is needed runtime
-%{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/include/couch_db.hrl
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/include/couch_db.hrl
 # XXX: check if .la is needed
-%{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/priv/lib/couch_erl_driver.la
-%attr(755,root,root) %{_libdir}/couchdb/erlang/lib/couch-%{version}-incubating/priv/lib/couch_erl_driver.so
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/couchspawnkillable
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.la
+%attr(755,root,root) %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.so
+
 # XXX: better have unversioned dirs?
-%dir %{_libdir}/couchdb/erlang/lib/mochiweb-r82
-%dir %{_libdir}/couchdb/erlang/lib/mochiweb-r82/ebin
-%{_libdir}/couchdb/erlang/lib/mochiweb-r82/ebin/*.beam
-%{_libdir}/couchdb/erlang/lib/mochiweb-r82/ebin/*.app
+%dir %{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}
+%dir %{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}/ebin
+%{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}/ebin/*.beam
+%{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}/ebin/*.app
+
+%{_libdir}/couchdb/erlang/lib/etap/ebin
+%{_libdir}/couchdb/erlang/lib/erlang-oauth/ebin
+%{_libdir}/couchdb/erlang/lib/ibrowse-%{_ibrowsever}/ebin
+
 %{_datadir}/couchdb
