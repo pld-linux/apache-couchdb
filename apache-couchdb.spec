@@ -4,7 +4,7 @@
 Summary:	Apache CouchDB
 Name:		apache-couchdb
 Version:	0.10.0
-Release:	0.1
+Release:	0.2
 License:	Apache v2.0
 Group:		Applications
 Source0:	http://www.apache.org/dist/couchdb/%{version}/%{name}-%{version}.tar.gz
@@ -94,6 +94,7 @@ fi
 %files
 %defattr(644,root,root,755)
 %doc AUTHORS BUGS CHANGES NEWS NOTICE README THANKS
+%dir %{_sysconfdir}/couchdb
 %dir %{_sysconfdir}/couchdb/default.d
 %dir %{_sysconfdir}/couchdb/local.d
 %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/default.ini
@@ -122,9 +123,14 @@ fi
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/ebin/*.beam
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/ebin/*.app
 # XXX check if this include is needed runtime
+%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}/include
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/include/couch_db.hrl
+
 # XXX: check if .la is needed
+%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/couchspawnkillable
+
+%dir %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.la
 %attr(755,root,root) %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.so
 
@@ -134,8 +140,13 @@ fi
 %{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}/ebin/*.beam
 %{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}/ebin/*.app
 
+%dir %{_libdir}/couchdb/erlang/lib/etap
 %{_libdir}/couchdb/erlang/lib/etap/ebin
+
+%dir %{_libdir}/couchdb/erlang/lib/erlang-oauth
 %{_libdir}/couchdb/erlang/lib/erlang-oauth/ebin
+
+%dir %{_libdir}/couchdb/erlang/lib/ibrowse-%{_ibrowsever}
 %{_libdir}/couchdb/erlang/lib/ibrowse-%{_ibrowsever}/ebin
 
 %{_datadir}/couchdb
