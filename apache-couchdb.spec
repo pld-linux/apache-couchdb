@@ -4,13 +4,13 @@
 Summary:	Apache CouchDB
 Name:		apache-couchdb
 Version:	0.10.0
-Release:	0.2
+Release:	0.3
 License:	Apache v2.0
 Group:		Applications
 Source0:	http://www.apache.org/dist/couchdb/%{version}/%{name}-%{version}.tar.gz
 # Source0-md5:	227886b5ecbb6bcbbdc538aac4592b0e
-Patch0:		%{name}-init.d.patch
-Patch1:		%{name}-aclocal.patch
+Source1:	%{name}.init
+Patch0:		%{name}-aclocal.patch
 URL:		http://couchdb.apache.org/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1.6.3
@@ -28,6 +28,8 @@ Requires(pre):	/usr/bin/getgid
 Requires(pre):	/usr/sbin/groupadd
 Requires(pre):	/usr/sbin/useradd
 Requires:	erlang >= 1:R12B5
+Requires:	libicu-devel
+Requires:	pkgconfig
 # these came from readme, need to check if these are really needed
 #Requires:	Mozilla-SpiderMonkey
 #Requires:	gcc
@@ -48,7 +50,6 @@ the default view definition language.
 %prep
 %setup -q
 %patch0 -p1
-%patch1 -p1
 
 %build
 
@@ -67,6 +68,13 @@ rm -rf $RPM_BUILD_ROOT
 	DESTDIR=$RPM_BUILD_ROOT
 
 rm -rf $RPM_BUILD_ROOT%{_docdir}/couchdb
+install -d $RPM_BUILD_ROOT/var/log/couchdb
+
+install -d $RPM_BUILD_ROOT/etc/sysconfig
+mv $RPM_BUILD_ROOT/etc/default/couchdb $RPM_BUILD_ROOT/etc/sysconfig
+
+install -d $RPM_BUILD_ROOT/etc/rc.d/init.d
+install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/couchdb
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -96,13 +104,17 @@ fi
 %doc AUTHORS BUGS CHANGES NEWS NOTICE README THANKS
 %dir %{_sysconfdir}/couchdb
 %dir %{_sysconfdir}/couchdb/default.d
-%dir %{_sysconfdir}/couchdb/local.d
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/default.ini
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/local.ini
+%attr(755,couchdb,couchdb) %{_sysconfdir}/couchdb/default.d
+%attr(755,couchdb,couchdb) %dir %{_sysconfdir}/couchdb/local.d
+%attr(644,couchdb,couchdb) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/default.ini
+%attr(644,couchdb,couchdb) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/couchdb/local.ini
 # XXX -> sysconfdir
-%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/default/couchdb
+%config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/sysconfig/couchdb
 %config(noreplace) %verify(not md5 mtime size) /etc/logrotate.d/couchdb
 %attr(754,root,root) /etc/rc.d/init.d/couchdb
+
+%dir /var/log/couchdb
+%attr(755,couchdb,couchdb) /var/log/couchdb
 
 # XXX: sbindir?
 %attr(755,root,root) %{_bindir}/couchdb
@@ -149,4 +161,4 @@ fi
 %dir %{_libdir}/couchdb/erlang/lib/ibrowse-%{_ibrowsever}
 %{_libdir}/couchdb/erlang/lib/ibrowse-%{_ibrowsever}/ebin
 
-%{_datadir}/couchdb
+%attr(755,couchdb,couchdb) %{_datadir}/couchdb
