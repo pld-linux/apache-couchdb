@@ -1,3 +1,4 @@
+
 %define _mochiwebver r97
 %define _ibrowsever 1.5.2
 
@@ -14,11 +15,13 @@ Patch0:		%{name}-aclocal.patch
 URL:		http://couchdb.apache.org/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1.6.3
+BuildRequires:	curl-devel
 BuildRequires:	erlang >= 1:R12B5
 BuildRequires:	help2man
 BuildRequires:	js-devel
 BuildRequires:	libicu-devel
 BuildRequires:	libtool
+BuildRequires:	pkgconfig
 BuildRequires:	rpmbuild(macros) >= 1.228
 Requires(post,preun):	/sbin/chkconfig
 Requires(postun):	/usr/sbin/groupdel
