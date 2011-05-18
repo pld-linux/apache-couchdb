@@ -1,17 +1,16 @@
 
-%define _mochiwebver r97
-%define _ibrowsever 1.5.2
+%define _mochiwebver r113
+%define _ibrowsever 2.1.2
 
 Summary:	Apache CouchDB
 Name:		apache-couchdb
-Version:	0.10.0
-Release:	0.3
+Version:	1.0.2
+Release:	0.1
 License:	Apache v2.0
 Group:		Applications
 Source0:	http://www.apache.org/dist/couchdb/%{version}/%{name}-%{version}.tar.gz
-# Source0-md5:	227886b5ecbb6bcbbdc538aac4592b0e
+# Source0-md5:	7ffbbe0f23f672181c89923c9f7a1de1
 Source1:	%{name}.init
-Patch0:		%{name}-aclocal.patch
 URL:		http://couchdb.apache.org/
 BuildRequires:	autoconf >= 2.59
 BuildRequires:	automake >= 1.6.3
@@ -52,12 +51,11 @@ the default view definition language.
 
 %prep
 %setup -q
-%patch0 -p1
 
 %build
 
 %{__libtoolize}
-%{__aclocal}
+%{__aclocal} -I m4
 %{__autoconf}
 %{__autoheader}
 %{__automake}
@@ -146,8 +144,10 @@ fi
 %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/couchspawnkillable
 
 %dir %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib
-%{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.la
-%attr(755,root,root) %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_erl_driver.so
+%{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_icu_driver.la
+%attr(755,root,root) %{_libdir}/couchdb/erlang/lib/couch-%{version}/priv/lib/couch_icu_driver.so
+/usr/lib64/couchdb/erlang/lib/couch-1.0.2/include/couch_js_functions.hrl
+/usr/lib64/couchdb/erlang/lib/couch-1.0.2/priv/stat_descriptions.cfg
 
 # XXX: better have unversioned dirs?
 %dir %{_libdir}/couchdb/erlang/lib/mochiweb-%{_mochiwebver}
