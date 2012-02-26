@@ -1,3 +1,5 @@
+# TODO
+# - merge to couchdb/couchdb.spec
 
 %define _mochiwebver r113
 %define _ibrowsever 2.1.2
